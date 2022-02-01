@@ -104,7 +104,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleLogout(ar *api.Request) (msg string, err error) {
-	_, purge := ar.URLVars["purge"]
+	purge := ar.URL.Query().Get("purge") != ""
 	err = logout(false, purge)
 	switch {
 	case err != nil:
@@ -128,7 +128,7 @@ func handleGetUserProfile(ar *api.Request) (r record.Record, err error) {
 	}
 
 	// Should we refresh the user profile?
-	if _, ok := ar.URLVars["refresh"]; ok {
+	if ar.URL.Query().Get("refresh") != "" {
 		user, _, err = getUserProfile()
 		if err != nil {
 			return nil, err
